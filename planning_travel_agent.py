@@ -87,6 +87,7 @@ def main():
         if user_type == "Me":
             # for local environment: Load environment variables from .env file
             GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+            st.write(GEMINI_API_KEY)
             os.environ["GOOGLE_API_KEY"] = GEMINI_API_KEY
             # for Streamlit Community Cloud : load API key using Streamlit secrets
             if GEMINI_API_KEY is None:
