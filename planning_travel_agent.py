@@ -23,7 +23,7 @@ from langgraph.prebuilt import create_react_agent
 # config
 # API
 load_dotenv()
-LANGCHAIN_API_KEY = os.getenv("GEMINI_API_KEY")
+LANGCHAIN_API_KEY = os.getenv("LANGCHAIN_API_KEY")
 if LANGCHAIN_API_KEY is None:
     LANGCHAIN_API_KEY = st.secrets["api_keys"]["LANGCHAIN_API_KEY"]
 os.environ["LANGCHAIN_API_KEY"] = LANGCHAIN_API_KEY
@@ -79,7 +79,7 @@ def main():
 
     try:
         # Streamlit app
-        st.title("🌍 Travel Chatbot - Plan Your Trip")
+        st.title("🌍 Travel Chatbot - Let's Plan Your Trip")
 
         # Sidebar selection
         user_type = st.sidebar.radio("Who is using this?", ("Me", "Others"))
