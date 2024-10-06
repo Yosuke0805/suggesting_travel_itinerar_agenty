@@ -20,12 +20,17 @@ from langchain_community.tools.tavily_search import TavilySearchResults
 from langchain.callbacks.tracers import LangChainTracer
 from langgraph.prebuilt import create_react_agent
 
+# config
 # API
-os.environ["LANGCHAIN_TRACING_V2"] = "true"
-os.environ["LANGCHAIN_API_KEY"] = "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"
-os.environ["TAVILY_API_KEY"] ="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"
-
-tracer = LangChainTracer()
+load_dotenv()
+LANGCHAIN_API_KEY = os.getenv("GEMINI_API_KEY")
+if LANGCHAIN_API_KEY is None:
+    LANGCHAIN_API_KEY = st.secrets["api_keys"]["LANGCHAIN_API_KEY"]
+os.environ["LANGCHAIN_API_KEY"] = LANGCHAIN_API_KEY
+TAVILY_API_KEY = os.getenv("TAVILY_API_KEY")
+if TAVILY_API_KEY is None:
+    TAVILY_API_KEY = st.secrets["api_keys"]["TAVILY_API_KEY"]
+os.environ["TAVILY_API_KEY"] = TAVILY_API_KEY
 
 # Define the system message for the agent's prompt.
 system_message = """
@@ -56,11 +61,12 @@ system_message = """
             - Slovakia Bratislava
             - Motenegro
             """
+# set up tracer
+tracer = LangChainTracer()
 
-# set up agent
+# set up tool
 search = TavilySearchResults(max_results=2)
 tools = [search]
-
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -80,11 +86,10 @@ def main():
 
         if user_type == "Me":
             # for local environment: Load environment variables from .env file
-            load_dotenv()
             GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
             os.environ["GOOGLE_API_KEY"] = GEMINI_API_KEY
             # for Streamlit Community Cloud : load API key using Streamlit secrets
-            if not GEMINI_API_KEY:
+            if GEMINI_API_KEY is None:
                 # Login section
                 password = st.sidebar.text_input("Password", type="password")
                 stored_password = st.secrets["password"]["MY_PASSWORD"]
