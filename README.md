@@ -19,5 +19,4 @@ Check it out [here](https://lets-make-travel-itinerary-together.streamlit.app/)!
 
 # TODO list
 - Implement tools for searching flight and hostels
-- customize system message for me and others
 

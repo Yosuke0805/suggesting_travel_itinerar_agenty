@@ -20,7 +20,7 @@ from langchain_community.tools.tavily_search import TavilySearchResults
 from langchain.callbacks.tracers import LangChainTracer
 from langgraph.prebuilt import create_react_agent
 
-# config
+# Config
 # API
 load_dotenv()
 LANGCHAIN_API_KEY = os.getenv("LANGCHAIN_API_KEY")
@@ -33,7 +33,7 @@ if TAVILY_API_KEY is None:
 os.environ["TAVILY_API_KEY"] = TAVILY_API_KEY
 
 # Define the system message for the agent's prompt.
-system_message = """
+system_message_for_myself = """
             You are a professional travel assistant that helps people plan trips.
             Your task is to provide a detailed travel plan based on prerequisites.
             Please exclude countries and cities that have been already visited when you plan a trip.
@@ -61,10 +61,23 @@ system_message = """
             - Slovakia Bratislava
             - Motenegro
             """
-# set up tracer
+
+system_message_for_others = """
+            You are a professional travel assistant that helps people plan trips.
+            Your task is to provide a detailed travel plan based on prerequisites.
+            Please exclude countries and cities that have been already visited when you plan a trip.
+
+            ### prerequisites
+            - duration : {traveling_days} days
+            - departure : {departure}
+            - final destination : {final_destination}
+
+            ### countries and cities that already been visited
+            """
+# Set up tracer
 tracer = LangChainTracer()
 
-# set up tool
+# Set up tool
 search = TavilySearchResults(max_results=2)
 tools = [search]
 
@@ -84,10 +97,13 @@ def main():
         # Sidebar selection
         user_type = st.sidebar.radio("Who is using this?", ("Me", "Others"))
 
+        # Devide the case depending on user
         if user_type == "Me":
-            # for local environment: Load environment variables from .env file
+            # Set system message for myself
+            system_message = system_message_for_myself
+            # For local environment: Load environment variables from .env file
             GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
-            # for Streamlit Community Cloud : load API key using Streamlit secrets
+            # For Streamlit Community Cloud : load API key using Streamlit secrets
             if GEMINI_API_KEY is None:
                 # Login section
                 password = st.sidebar.text_input("Password", type="password")
@@ -96,16 +112,18 @@ def main():
                     if password == stored_password:
                         st.sidebar.success("Welcome Yosuke!")
                         GEMINI_API_KEY = st.secrets["api_keys"]["GEMINI_API_KEY"]
-                        # configure model with api key
+                        # Configure model with api key
                         os.environ["GOOGLE_API_KEY"] = GEMINI_API_KEY
                     else:
                         st.sidebar.error("Invalid password")
             else:
                 os.environ["GOOGLE_API_KEY"] = GEMINI_API_KEY
         elif user_type == "Others":
-            # set Gemini API
+            # Set system message for others
+            system_message = system_message_for_others
+            # Set Gemini API
             GEMINI_API_KEY = st.sidebar.text_input("Input your Gemini API key", type="password")
-            # configure model with api key
+            # cCnfigure model with api key
             os.environ["GOOGLE_API_KEY"] = GEMINI_API_KEY
 
         # configure model
