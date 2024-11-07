@@ -51,7 +51,7 @@ system_message_for_myself = """
             - Czechia prague
             - Germany Munich
             - Italy Milan, Rome
-            - Spain Madrid, Tredo
+            - Spain Madrid, Tredo, Barcelona
             - Hungary Budapest
             - Croatia Dubrovnik
             - North Macedonia
@@ -60,6 +60,9 @@ system_message_for_myself = """
             - Austria Vienna
             - Slovakia Bratislava
             - Motenegro
+            - Belgium
+            - Netherlandas
+            - Poland
             """
 
 system_message_for_others = """
